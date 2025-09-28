@@ -14,9 +14,17 @@ namespace RestFullAPIs_CRUD.Controllers
         {
             _userBusinessLayer = userBusinessLayer;
         }
+
         [HttpPost]
         public IActionResult CreateUser([FromBody] UserRequestModel user) { 
             var response = _userBusinessLayer.CreateUser(user);
+            return Ok(response);
+        }
+
+        [HttpGet]
+        public IActionResult GetUser()
+        {
+            var response = _userBusinessLayer.GetUsers();
             return Ok(response);
         }
     }

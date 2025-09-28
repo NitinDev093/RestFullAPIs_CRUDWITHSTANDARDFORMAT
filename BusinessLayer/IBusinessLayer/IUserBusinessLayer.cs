@@ -11,5 +11,6 @@ namespace BusinessLayer.IBusinessLayer
     public interface IUserBusinessLayer
     {
         ApiResponse<string> CreateUser(UserRequestModel user);
+        ApiResponse<List<UserResponseModel>> GetUsers();
     }
 }

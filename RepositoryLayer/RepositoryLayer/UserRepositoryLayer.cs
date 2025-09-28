@@ -41,6 +41,18 @@ namespace RepositoryLayer.RepositoryLayer
             }
         }
 
-    
+        public DataTable GetUsers()
+        {
+            DataTable dt = new DataTable();
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("usp_GetUsers", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                
+                SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(cmd);
+                sqlDataAdapter.Fill(dt);
+            }
+            return dt;
+        }
     }
 }
