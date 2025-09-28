@@ -27,5 +27,10 @@ namespace RestFullAPIs_CRUD.Controllers
             var response = _userBusinessLayer.GetUsers();
             return Ok(response);
         }
+
+
+
+
+        
     }
 }

@@ -25,7 +25,6 @@ namespace RepositoryLayer.RepositoryLayer
             {
                 SqlCommand cmd = new SqlCommand("usp_CreateUser", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-
                 cmd.Parameters.AddWithValue("@FirstName", user.FirstName);
                 cmd.Parameters.AddWithValue("@LastName", (object?)user.LastName ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@Gender", (object?)user.Gender ?? DBNull.Value);
@@ -34,7 +33,6 @@ namespace RepositoryLayer.RepositoryLayer
                 cmd.Parameters.AddWithValue("@Phone", (object?)user.Phone ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@Username", user.Username);
                 cmd.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
-
                 con.Open();
                 object result = cmd.ExecuteScalar();
                 return Convert.ToInt32(result); // returns the new UserID
@@ -48,11 +46,12 @@ namespace RepositoryLayer.RepositoryLayer
             {
                 SqlCommand cmd = new SqlCommand("usp_GetUsers", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                
                 SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(cmd);
                 sqlDataAdapter.Fill(dt);
             }
             return dt;
         }
+
+        
     }
 }

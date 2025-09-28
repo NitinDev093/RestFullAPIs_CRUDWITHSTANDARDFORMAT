@@ -31,34 +31,30 @@ namespace BusinessLayer.BusinessLayer
 
         public ApiResponse<string> CreateUser(UserRequestModel user)
         {
-            ApiResponse<string> response;
+            ApiResponse<string> response=new ApiResponse<string>();
             user.PasswordHash= EncodeDecodeHelper.EncodePasswordToBase64(user.PasswordHash);
-
             int Id = _userRepositoryLayer.CreateUser(user);
-
             if (Id > 0) {
-                response = new ApiResponse<string>()
                 {
-                    Data = EncodeDecodeHelper.EncodePasswordToBase64(Id.ToString()),
-
-                    IsSuccess = true,
-                    Message = "User created successfully"
-                };
+                    response.Data = EncodeDecodeHelper.EncodePasswordToBase64(Id.ToString());
+                    response.IsSuccess = true;
+                    response.Message = "User created successfully";
+                }
                 EmailHelper.SendEmail(_configuration,user.Email,"RestFull APIs Regerstion completed.", "Hello, your reference ID is:"+ Id);
                 return response;
             }
-            response = new ApiResponse<string>()
+            else
             {
-                Data = string.Empty,
-                IsSuccess = false,
-                Message = "Unable to create user. "
-            };
+                response.Data = null;
+                response.IsSuccess = false;
+                response.Message = "User creation failed.";
+            }
             return response;
         }
 
         public ApiResponse<List<UserResponseModel>> GetUsers()
         {
-            ApiResponse<List<UserResponseModel>> response;
+            ApiResponse<List<UserResponseModel>> response=new ApiResponse<List<UserResponseModel>>();
             List <UserResponseModel> Items = new List<UserResponseModel>();
             DataTable result = _userRepositoryLayer.GetUsers();
             if (result.Rows.Count > 0)
@@ -78,42 +74,23 @@ namespace BusinessLayer.BusinessLayer
                 //}
 
                 foreach (DataRow data in result.Rows) {
-                    UserResponseModel item = new UserResponseModel()
-                    {
-                        UserId = EncodeDecodeHelper.EncodePasswordToBase64(data["UserId"].ToString()),
-                        FirstName = data["FirstName"].ToString()
-                    };
-
+                    UserResponseModel item = new UserResponseModel();
+                    item.UserId = EncodeDecodeHelper.EncodePasswordToBase64(data["UserId"].ToString());
+                    item.FirstName = data["FirstName"].ToString();
                     Items.Add(item);
                 }
-
-
-                response = new ApiResponse<List<UserResponseModel>>()
-                {
-                    Data = Items,
-                    IsSuccess = true,
-                    Message = "User list fetched successfully."
-                };
+                response.Data = Items;
+                response.IsSuccess = true;
+                response.Message = "User list fetched successfully.";
             }
-            else { 
+            else {
 
-                response = new ApiResponse<List<UserResponseModel>>()
-                {
-                    Data = null,
-                    IsSuccess = false,
-                    Message = "No data found."
-                };
+                response.Data = null;
+                response.IsSuccess = false;
+                response.Message = "No data found.";
             }
-
             return response;
-
-
-
-
-
-
-
-
         }
+
     }
 }
