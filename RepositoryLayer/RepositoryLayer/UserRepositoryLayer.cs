@@ -1,4 +1,5 @@
 ﻿using CommonLayer.RequestModel;
+using CommonLayer.ResponseModel;
 using Microsoft.Extensions.Configuration;
 using RepositoryLayer.IRepositoryLayer;
 using System;
@@ -52,6 +53,19 @@ namespace RepositoryLayer.RepositoryLayer
             return dt;
         }
 
-        
+        public DataTable getusersById(string id)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                DataTable dt=new DataTable();
+                SqlCommand cmd = new SqlCommand("usp_getusersByIdname", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@UserId", id);
+                SqlDataAdapter sda=new SqlDataAdapter(cmd);
+                sda.Fill(dt);
+                return dt;
+            }
+        }
+
     }
 }

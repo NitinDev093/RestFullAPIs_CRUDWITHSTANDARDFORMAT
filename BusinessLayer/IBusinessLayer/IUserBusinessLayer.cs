@@ -12,5 +12,6 @@ namespace BusinessLayer.IBusinessLayer
     {
         ApiResponse<string> CreateUser(UserRequestModel user);
         ApiResponse<List<UserResponseModel>> GetUsers();
+       ApiResponse<UserResponseModel> getusersById(string id);
     }
 }

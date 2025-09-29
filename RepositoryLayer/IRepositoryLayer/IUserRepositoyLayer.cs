@@ -12,7 +12,7 @@ namespace RepositoryLayer.IRepositoryLayer
     public interface IUserRepositoyLayer
     {
         int CreateUser(UserRequestModel user);
-
         DataTable GetUsers();
+        DataTable getusersById(string id);
     }
 }

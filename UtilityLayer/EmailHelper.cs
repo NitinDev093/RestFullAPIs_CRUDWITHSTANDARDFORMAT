@@ -12,7 +12,6 @@ namespace UtilityLayer
             try
             {
                 var appSettings = config.GetSection("EmailSettings");
-
                 string fromEmail = appSettings["FromEmail"];
                 string fromPassword = appSettings["Password"];
                 string host = appSettings["Host"];

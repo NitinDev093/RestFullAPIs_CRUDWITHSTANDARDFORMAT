@@ -92,5 +92,46 @@ namespace BusinessLayer.BusinessLayer
             return response;
         }
 
+        public ApiResponse<UserResponseModel> getusersById(string id)
+        {
+            ApiResponse<UserResponseModel> response= new ApiResponse<UserResponseModel>();
+            UserResponseModel user = new UserResponseModel();
+            if (string.IsNullOrEmpty(id))
+            {
+                response.IsSuccess = false;
+                response.Message = "Bad request";
+                return response; ;
+            }
+            id = EncodeDecodeHelper.DecodeFrom64(id);
+            DataTable result=_userRepositoryLayer.getusersById(id);
+            if (result!=null && result.Rows.Count>0)
+            {
+                user.UserId= result.Rows[0]["UserId"].ToString();
+                user.PasswordHash= EncodeDecodeHelper.DecodeFrom64(result.Rows[0]["PasswordHash"].ToString());
+                user.FirstName= result.Rows[0]["FirstName"].ToString();
+                user.LastName= result.Rows[0]["LastName"].ToString();
+                user.Email= result.Rows[0]["Email"].ToString();
+                user.Phone= result.Rows[0]["Phone"].ToString();
+                user.DOB= result.Rows[0]["DOB"].ToString();
+                user.CreatedDate= Convert.ToString(result.Rows[0]["CreatedDate"]);
+                user.UpdatedDate= Convert.ToString(result.Rows[0]["UpdatedDate"]);
+                user.IsActive= Convert.ToBoolean(result.Rows[0]["IsActive"]);
+                user.Username= result.Rows[0]["Username"].ToString();
+                user.Gender = result.Rows[0].ToString();
+                
+                response.Data = user;
+                response.IsSuccess = true;
+                response.Message = "User data fetched successfully.";
+            }
+            else
+            {
+                response.Data = null;
+                response.IsSuccess = false;
+                response.Message = "No data found.";
+            }
+            return response;
+            
+        }
+        
     }
 }

@@ -10,8 +10,8 @@ namespace CommonLayer.ResponseModel
     public class UserResponseModel : UserRequestModel
     {
         public string UserId { get; set; }
-        public DateTime CreatedDate { get; set; }  
-        public DateTime? UpdatedDate { get; set; }
+        public string CreatedDate { get; set; }  
+        public string UpdatedDate { get; set; }
         public bool IsActive { get; set; }
     }
 }

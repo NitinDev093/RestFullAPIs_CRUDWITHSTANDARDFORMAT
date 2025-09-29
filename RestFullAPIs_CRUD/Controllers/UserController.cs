@@ -15,12 +15,14 @@ namespace RestFullAPIs_CRUD.Controllers
             _userBusinessLayer = userBusinessLayer;
         }
 
+        [Route("CreateUsers")]
         [HttpPost]
         public IActionResult CreateUser([FromBody] UserRequestModel user) { 
             var response = _userBusinessLayer.CreateUser(user);
             return Ok(response);
         }
 
+        [Route("GetUsers")]
         [HttpGet]
         public IActionResult GetUser()
         {
@@ -28,9 +30,16 @@ namespace RestFullAPIs_CRUD.Controllers
             return Ok(response);
         }
 
+        [HttpGet("GetUserById/{id}")]
+        public IActionResult GetUserById(string id)
+        {
+            var response = _userBusinessLayer.getusersById(id);
+            return Ok(response);
+        }
 
 
 
-        
+
+
     }
 }
