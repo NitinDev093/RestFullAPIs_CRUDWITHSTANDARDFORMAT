@@ -14,6 +14,8 @@ namespace RepositoryLayer.RepositoryLayer
 {
     public class UserRepositoryLayer : IUserRepositoyLayer
     {
+        //IConfiguration:-yeh appsetting.json ki value ko read karta hai
+        //,connecction string ko read karne ke liye use hota hai
         private readonly string _connectionString;
         public UserRepositoryLayer(IConfiguration configuration)
         {

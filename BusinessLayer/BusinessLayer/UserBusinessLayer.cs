@@ -20,7 +20,7 @@ namespace BusinessLayer.BusinessLayer
     public class UserBusinessLayer : IUserBusinessLayer
     {
         private readonly IUserRepositoyLayer _userRepositoryLayer;
-        private readonly IConfiguration _configuration;
+        private readonly IConfiguration _configuration;//This is configuartion for email setting
 
         public UserBusinessLayer(IUserRepositoyLayer userRepositoryLayer, IConfiguration configuration)
         {
@@ -36,13 +36,10 @@ namespace BusinessLayer.BusinessLayer
             int Id = _userRepositoryLayer.CreateUser(user);
             if (Id > 0)
             {
-                {
-                    response.Data = EncodeDecodeHelper.EncodePasswordToBase64(Id.ToString());
-                    response.IsSuccess = true;
-                    response.Message = "User created successfully";
-                }
+                response.Data = EncodeDecodeHelper.EncodePasswordToBase64(Id.ToString());
+                response.IsSuccess = true;
+                response.Message = "User created successfully";
                 EmailHelper.SendEmail(_configuration, user.Email, "RestFull APIs Regerstion completed.", "Hello, your reference ID is:" + Id);
-                return response;
             }
             else
             {
