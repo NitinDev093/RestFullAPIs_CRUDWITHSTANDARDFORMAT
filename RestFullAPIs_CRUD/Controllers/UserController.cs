@@ -37,6 +37,12 @@ namespace RestFullAPIs_CRUD.Controllers
             return Ok(response);
         }
 
+        [HttpDelete("DeleteUsers/{id}")]
+        public IActionResult DeleteUsers(string id)
+        {
+            var response = _userBusinessLayer.DeleteUsers(id);
+            return Ok(response);
+        }
 
 
 

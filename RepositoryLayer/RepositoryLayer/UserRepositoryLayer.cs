@@ -40,6 +40,7 @@ namespace RepositoryLayer.RepositoryLayer
             }
         }
 
+        
         public DataTable GetUsers()
         {
             DataTable dt = new DataTable();
@@ -66,6 +67,20 @@ namespace RepositoryLayer.RepositoryLayer
                 return dt;
             }
         }
+
+        public int DeleteUsers(int id)
+        {
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("usp_DeleteUser", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@UserId", id);
+                con.Open();
+                int result = cmd.ExecuteNonQuery();
+                return result; // returns the number of rows affected
+            }
+        }
+
 
     }
 }

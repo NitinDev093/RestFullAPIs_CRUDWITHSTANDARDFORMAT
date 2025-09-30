@@ -21,7 +21,7 @@ namespace BusinessLayer.BusinessLayer
     {
         private readonly IUserRepositoyLayer _userRepositoryLayer;
         private readonly IConfiguration _configuration;
-    
+
         public UserBusinessLayer(IUserRepositoyLayer userRepositoryLayer, IConfiguration configuration)
         {
             _userRepositoryLayer = userRepositoryLayer;
@@ -31,16 +31,17 @@ namespace BusinessLayer.BusinessLayer
 
         public ApiResponse<string> CreateUser(UserRequestModel user)
         {
-            ApiResponse<string> response=new ApiResponse<string>();
-            user.PasswordHash= EncodeDecodeHelper.EncodePasswordToBase64(user.PasswordHash);
+            ApiResponse<string> response = new ApiResponse<string>();
+            user.PasswordHash = EncodeDecodeHelper.EncodePasswordToBase64(user.PasswordHash);
             int Id = _userRepositoryLayer.CreateUser(user);
-            if (Id > 0) {
+            if (Id > 0)
+            {
                 {
                     response.Data = EncodeDecodeHelper.EncodePasswordToBase64(Id.ToString());
                     response.IsSuccess = true;
                     response.Message = "User created successfully";
                 }
-                EmailHelper.SendEmail(_configuration,user.Email,"RestFull APIs Regerstion completed.", "Hello, your reference ID is:"+ Id);
+                EmailHelper.SendEmail(_configuration, user.Email, "RestFull APIs Regerstion completed.", "Hello, your reference ID is:" + Id);
                 return response;
             }
             else
@@ -54,8 +55,8 @@ namespace BusinessLayer.BusinessLayer
 
         public ApiResponse<List<UserResponseModel>> GetUsers()
         {
-            ApiResponse<List<UserResponseModel>> response=new ApiResponse<List<UserResponseModel>>();
-            List <UserResponseModel> Items = new List<UserResponseModel>();
+            ApiResponse<List<UserResponseModel>> response = new ApiResponse<List<UserResponseModel>>();
+            List<UserResponseModel> Items = new List<UserResponseModel>();
             DataTable result = _userRepositoryLayer.GetUsers();
             if (result.Rows.Count > 0)
             {
@@ -73,7 +74,8 @@ namespace BusinessLayer.BusinessLayer
                 //    Items[i].UserId = EncodeDecodeHelper.EncodePasswordToBase64(Items[i].UserId.ToString());
                 //}
 
-                foreach (DataRow data in result.Rows) {
+                foreach (DataRow data in result.Rows)
+                {
                     UserResponseModel item = new UserResponseModel();
                     item.UserId = EncodeDecodeHelper.EncodePasswordToBase64(data["UserId"].ToString());
                     item.FirstName = data["FirstName"].ToString();
@@ -83,7 +85,8 @@ namespace BusinessLayer.BusinessLayer
                 response.IsSuccess = true;
                 response.Message = "User list fetched successfully.";
             }
-            else {
+            else
+            {
 
                 response.Data = null;
                 response.IsSuccess = false;
@@ -94,7 +97,7 @@ namespace BusinessLayer.BusinessLayer
 
         public ApiResponse<UserResponseModel> getusersById(string id)
         {
-            ApiResponse<UserResponseModel> response= new ApiResponse<UserResponseModel>();
+            ApiResponse<UserResponseModel> response = new ApiResponse<UserResponseModel>();
             UserResponseModel user = new UserResponseModel();
             if (string.IsNullOrEmpty(id))
             {
@@ -103,22 +106,22 @@ namespace BusinessLayer.BusinessLayer
                 return response; ;
             }
             id = EncodeDecodeHelper.DecodeFrom64(id);
-            DataTable result=_userRepositoryLayer.getusersById(id);
-            if (result!=null && result.Rows.Count>0)
+            DataTable result = _userRepositoryLayer.getusersById(id);
+            if (result != null && result.Rows.Count > 0)
             {
-                user.UserId= result.Rows[0]["UserId"].ToString();
-                user.PasswordHash= EncodeDecodeHelper.DecodeFrom64(result.Rows[0]["PasswordHash"].ToString());
-                user.FirstName= result.Rows[0]["FirstName"].ToString();
-                user.LastName= result.Rows[0]["LastName"].ToString();
-                user.Email= result.Rows[0]["Email"].ToString();
-                user.Phone= result.Rows[0]["Phone"].ToString();
-                user.DOB= result.Rows[0]["DOB"].ToString();
-                user.CreatedDate= Convert.ToString(result.Rows[0]["CreatedDate"]);
-                user.UpdatedDate= Convert.ToString(result.Rows[0]["UpdatedDate"]);
-                user.IsActive= Convert.ToBoolean(result.Rows[0]["IsActive"]);
-                user.Username= result.Rows[0]["Username"].ToString();
+                user.UserId = result.Rows[0]["UserId"].ToString();
+                user.PasswordHash = EncodeDecodeHelper.DecodeFrom64(result.Rows[0]["PasswordHash"].ToString());
+                user.FirstName = result.Rows[0]["FirstName"].ToString();
+                user.LastName = result.Rows[0]["LastName"].ToString();
+                user.Email = result.Rows[0]["Email"].ToString();
+                user.Phone = result.Rows[0]["Phone"].ToString();
+                user.DOB = result.Rows[0]["DOB"].ToString();
+                user.CreatedDate = Convert.ToString(result.Rows[0]["CreatedDate"]);
+                user.UpdatedDate = Convert.ToString(result.Rows[0]["UpdatedDate"]);
+                user.IsActive = Convert.ToBoolean(result.Rows[0]["IsActive"]);
+                user.Username = result.Rows[0]["Username"].ToString();
                 user.Gender = result.Rows[0].ToString();
-                
+
                 response.Data = user;
                 response.IsSuccess = true;
                 response.Message = "User data fetched successfully.";
@@ -130,8 +133,30 @@ namespace BusinessLayer.BusinessLayer
                 response.Message = "No data found.";
             }
             return response;
-            
+
         }
-        
+
+        public ApiResponse<string> DeleteUsers(string id)
+        {
+            ApiResponse<string> response= new ApiResponse<string>();
+            if (string.IsNullOrEmpty(id))
+            {
+                response.IsSuccess = false;
+                response.Message = "Bad request";
+            }
+            id= EncodeDecodeHelper.DecodeFrom64(id);
+            int result = _userRepositoryLayer.DeleteUsers(Convert.ToInt32(id));
+            if (result>0)
+            {
+                response.IsSuccess = true;
+                response.Message = "User deleted successfully.";
+            }
+            else
+            {
+                response.IsSuccess = false;
+                response.Message = "User deletion failed.";
+            }
+            return response;
+        }
     }
 }
