@@ -14,5 +14,6 @@ namespace BusinessLayer.IBusinessLayer
         ApiResponse<List<UserResponseModel>> GetUsers();
         ApiResponse<UserResponseModel> getusersById(string id);
         ApiResponse<string> DeleteUsers(string id);
+        ApiResponse<string> Login(string username, string password);
     }
 }

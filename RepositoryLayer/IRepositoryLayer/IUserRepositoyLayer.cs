@@ -15,5 +15,6 @@ namespace RepositoryLayer.IRepositoryLayer
         DataTable GetUsers();
         DataTable getusersById(string id);
         int DeleteUsers(int id);
+        DataTable Login(string username, string password);
     }
 }

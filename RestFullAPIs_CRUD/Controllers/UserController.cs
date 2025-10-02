@@ -1,11 +1,13 @@
 ﻿using BusinessLayer.IBusinessLayer;
 using CommonLayer.RequestModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace RestFullAPIs_CRUD.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUserBusinessLayer _userBusinessLayer;
@@ -41,6 +43,13 @@ namespace RestFullAPIs_CRUD.Controllers
         public IActionResult DeleteUsers(string id)
         {
             var response = _userBusinessLayer.DeleteUsers(id);
+            return Ok(response);
+        }
+        [AllowAnonymous]
+        [HttpPost("Login/{username}/{password}")]
+        public IActionResult Login(string username, string password)
+        {
+            var response = _userBusinessLayer.Login(username, password);
             return Ok(response);
         }
 

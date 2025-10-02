@@ -21,15 +21,17 @@ namespace BusinessLayer.BusinessLayer
     {
         private readonly IUserRepositoyLayer _userRepositoryLayer;
         private readonly IConfiguration _configuration;//This is configuartion for email setting
+        private readonly JwtHelper _jwtHelper;
 
-        public UserBusinessLayer(IUserRepositoyLayer userRepositoryLayer, IConfiguration configuration)
+        public UserBusinessLayer(JwtHelper jwtHelper,IUserRepositoyLayer userRepositoryLayer, IConfiguration configuration)
         {
             _userRepositoryLayer = userRepositoryLayer;
             _configuration = configuration;
-
+            _jwtHelper = jwtHelper;
         }
+        
 
-        public ApiResponse<string> CreateUser(UserRequestModel user)
+            public ApiResponse<string> CreateUser(UserRequestModel user)
         {
             ApiResponse<string> response = new ApiResponse<string>();
             user.PasswordHash = EncodeDecodeHelper.EncodePasswordToBase64(user.PasswordHash);
@@ -40,6 +42,7 @@ namespace BusinessLayer.BusinessLayer
                 response.IsSuccess = true;
                 response.Message = "User created successfully";
                 EmailHelper.SendEmail(_configuration, user.Email, "RestFull APIs Regerstion completed.", "Hello, your reference ID is:" + Id);
+                return response;
             }
             else
             {
@@ -152,6 +155,37 @@ namespace BusinessLayer.BusinessLayer
             {
                 response.IsSuccess = false;
                 response.Message = "User deletion failed.";
+            }
+            return response;
+        }
+
+        public ApiResponse<string> Login(string username, string password)
+        {
+            password = EncodeDecodeHelper.EncodePasswordToBase64(password);
+            ApiResponse<string> response = new ApiResponse<string>();
+            DataTable result = _userRepositoryLayer.Login(username, password);
+            if (result != null && result.Rows.Count > 0)
+            {
+                UserResponseModel user = new UserResponseModel();
+                user.UserId = EncodeDecodeHelper.EncodePasswordToBase64(result.Rows[0]["UserId"].ToString());
+                user.PasswordHash = EncodeDecodeHelper.DecodeFrom64(result.Rows[0]["PasswordHash"].ToString());
+                user.FirstName = result.Rows[0]["FirstName"].ToString();
+                user.LastName = result.Rows[0]["LastName"].ToString();
+                user.Email = result.Rows[0]["Email"].ToString();
+                user.Phone = result.Rows[0]["Phone"].ToString();
+                user.DOB = result.Rows[0]["DOB"].ToString();
+                user.Username = result.Rows[0]["Username"].ToString();
+                //JwtHelper helper = new JwtHelper(_configuration);
+                string token = _jwtHelper.GenerateToken(user, 60);
+                response.IsSuccess = true;
+                response.Message = "Login successful.";
+                response.Data = token;
+            }
+            else
+            {
+                response.Data = null;
+                response.IsSuccess = false;
+                response.Message = "Invalid username or password.";
             }
             return response;
         }

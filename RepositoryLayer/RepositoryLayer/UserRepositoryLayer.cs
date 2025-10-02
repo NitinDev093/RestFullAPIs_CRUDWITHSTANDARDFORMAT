@@ -83,6 +83,19 @@ namespace RepositoryLayer.RepositoryLayer
             }
         }
 
-
+        public DataTable Login(string username, string password)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                DataTable dt = new DataTable();
+                SqlCommand cmd = new SqlCommand("usp_loginUser", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Username", username);
+                cmd.Parameters.AddWithValue("@PasswordHash", password);
+                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                sda.Fill(dt);
+                return dt;
+            }
+        }
     }
 }
